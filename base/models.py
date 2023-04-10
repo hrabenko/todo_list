@@ -8,6 +8,9 @@ class Task(models.Model):
     complete = models.BooleanField(default=False)
     create = models.DateTimeField(auto_now_add=True)
 
+    PRIORITY_LIST = [("H", "High"), ("M", "Medium"), ("L", "Low")]
+
+    priority = models.CharField(max_length=1, choices=PRIORITY_LIST, default='H')
     def __str__(self):
         return self.title
     
