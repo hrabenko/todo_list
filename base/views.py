@@ -52,6 +52,13 @@ class TaskList(LoginRequiredMixin,ListView):
 
         context['search_input'] = search_input
 
+        priority_id = self.request.GET.get('priority')
+        if priority_id:
+            context['tasks'] = context['tasks'].filter(priority=priority_id)
+
+        context['priority_id'] = priority_id
+
+
         return context
 
 class TaskDetail(LoginRequiredMixin, DetailView):
