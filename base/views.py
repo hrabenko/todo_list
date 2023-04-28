@@ -56,8 +56,9 @@ class TaskList(LoginRequiredMixin,ListView):
         if priority_id:
             context['tasks'] = context['tasks'].filter(priority=priority_id)
 
-        context['priority_id'] = priority_id
-
+        complete_id = self.request.GET.get('complete')
+        if complete_id:
+            context['tasks'] = context['tasks'].filter(complete=complete_id)
 
         return context
 
