@@ -9,6 +9,7 @@
 <hr>
 <h1>My To Do List {{ color }}</h1>
 <a href="{% url 'task-create' %}">Add Task</a>
+<a href="{% url 'category-create' %}">Add Category</a>
 
 <form method="GET">
     <input type="text" name="search-area" value="{{search_input}}">
@@ -46,5 +47,24 @@
     </tr>
     {% empty %}
         <h3>No items in list</h3>
+    {% endfor %}
+</table>
+
+
+</br>
+<table>
+    <tr>
+        <th>Categories</th>
+        <th></th>
+        <th></th>
+    </tr>
+    {% for category in categories %}
+    <tr>
+        <td>{{ category.name }}</td>
+        <td><a href="{% url 'category-update' category.id %}">Edit</a></td>
+        <td><a href="{% url 'category-delete' category.id %}">Delete</a></td>
+    </tr>
+    {% empty %}
+    <h3>No categories</h3>
     {% endfor %}
 </table>

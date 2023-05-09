@@ -1,4 +1,4 @@
-from .models import Task
+from .models import Task, Category
 from django.shortcuts import render, redirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
@@ -45,6 +45,8 @@ class TaskList(LoginRequiredMixin,ListView):
         context = super().get_context_data(**kwargs)
         context['tasks'] = context['tasks'].filter(user=self.request.user)
         context['count'] = context['tasks'].filter(complete=False).count()
+        categories = Category.objects.filter(user=self.request.user)
+        context['categories'] = categories
 
         search_input = self.request.GET.get('search-area') or ''
         if search_input:
@@ -81,7 +83,26 @@ class TaskUpdate(LoginRequiredMixin, UpdateView):
     fields = ['title', 'description', 'priority', 'complete']
     success_url = reverse_lazy('tasks')
 
-class DeleteView(LoginRequiredMixin, DeleteView):
+class TaskDelete(LoginRequiredMixin, DeleteView):
     model = Task
+    context_object_name = 'task'
+    success_url = reverse_lazy('tasks')
+
+class CategoryCreate(LoginRequiredMixin, CreateView):
+    model = Category
+    fields = ['name', 'description']
+    success_url = reverse_lazy('tasks')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(CategoryCreate, self).form_valid(form)
+    
+class CategoryUpdate(LoginRequiredMixin, UpdateView):
+    model = Category
+    fields = ['name', 'description']
+    success_url = reverse_lazy('tasks')
+
+class CategoryDelete(LoginRequiredMixin, DeleteView):
+    model = Category
     context_object_name = 'task'
     success_url = reverse_lazy('tasks')
