@@ -17,6 +17,13 @@ class Task(models.Model):
     # category = models.ForeignKey(Category, on_delete=models.CASCADE)
     def __str__(self):
         return self.title
-    
+
+    @property
+    def completion_percentage(self):
+        total_tasks = Task.objects.count()
+        completed_tasks = Task.objects.filter(complete=True).count()
+        percentage = (completed_tasks / total_tasks) * 100 if total_tasks > 0 else 0
+        return percentage
+
     class Meta:
         ordering = ['complete']

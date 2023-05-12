@@ -50,7 +50,6 @@
     {% endfor %}
 </table>
 
-
 </br>
 <table>
     <tr>
@@ -67,4 +66,10 @@
     {% empty %}
     <h3>No categories</h3>
     {% endfor %}
+
 </table>
+
+{% for task in tasks %}
+    <p>{{ task.title }}</p>
+    <p>Відсоток виконання: {{ task.completion_percentage }}%</p>
+{% endfor %}
