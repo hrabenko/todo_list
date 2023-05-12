@@ -1,5 +1,5 @@
 from .models import Task, Category
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
@@ -9,6 +9,8 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from reportlab.pdfgen import canvas
+from django.http import HttpResponse
 
 class CustomLoginView(LoginView):
     template_name = 'base/login.html'
@@ -81,6 +83,36 @@ class TaskDetail(LoginRequiredMixin, DetailView):
     context_object_name = 'task'
     template_name = 'base/task.html'
 
+class ExportPDFView(LoginRequiredMixin, ListView):
+    model = Task
+    template_name = 'base/pdf_template.html'
+
+    def render_to_response(self, context, **response_kwargs):
+        tasks = context['object_list']
+
+        # Create PDF
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="todo_list.pdf"'
+        p = canvas.Canvas(response)
+
+        # Generate PDF content
+        p.setFont('Helvetica-Bold', 16)  # Задаємо шрифт та розмір для заголовку
+        p.drawString(100, 800, 'Tasks:')  # Виводимо заголовок
+
+        p.setFont('Helvetica', 12)  # Повертаємо шрифт та розмір для завдань
+        y = 770  # Задаємо початкову позицію для завдань
+        task_number = 1  # Лічильник завдань
+        for task in tasks:
+            status = "Done" if task.complete else "Not Done"
+            task_line = f"{task_number}. {task.title} - {status}"
+            p.drawString(100, y, task_line)
+            y -= 20
+            task_number += 1
+
+        p.showPage()
+        p.save()
+
+        return response
 class TaskCreate(LoginRequiredMixin, CreateView):
     model = Task
     fields = ['title', 'description', 'priority', 'complete']
