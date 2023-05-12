@@ -43,24 +43,36 @@ class TaskList(LoginRequiredMixin,ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['tasks'] = context['tasks'].filter(user=self.request.user)
-        context['count'] = context['tasks'].filter(complete=False).count()
-        categories = Category.objects.filter(user=self.request.user)
-        context['categories'] = categories
+        user = self.request.user
+        user_tasks = Task.objects.filter(user=user)
+        context['tasks'] = user_tasks
 
         search_input = self.request.GET.get('search-area') or ''
         if search_input:
-            context['tasks'] = context['tasks'].filter(title__icontains=search_input)
+            context['tasks'] = user_tasks.filter(title__icontains=search_input)
 
         context['search_input'] = search_input
 
         priority_id = self.request.GET.get('priority')
         if priority_id:
-            context['tasks'] = context['tasks'].filter(priority=priority_id)
+            context['tasks'] = user_tasks.filter(priority=priority_id)
 
         complete_id = self.request.GET.get('complete')
         if complete_id:
-            context['tasks'] = context['tasks'].filter(complete=complete_id)
+            context['tasks'] = user_tasks.filter(complete=complete_id)
+
+        categories = Category.objects.filter(user=user)
+        context['categories'] = categories
+
+        # Calculate overall completion percentage
+        total_tasks = user_tasks.count()
+        completed_tasks = user_tasks.filter(complete=True).count()
+        if total_tasks > 0:
+            overall_completion_percentage = (completed_tasks / total_tasks) * 100
+        else:
+            overall_completion_percentage = 0
+
+        context['overall_completion_percentage'] = overall_completion_percentage
 
         return context
 

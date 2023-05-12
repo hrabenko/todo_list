@@ -1,4 +1,3 @@
-
 {% if request.user.is_authenticated  %}
 <p>{{ request.user }}</p>
 <a href = "{% url 'logout' %}">Logout</a>
@@ -69,7 +68,4 @@
 
 </table>
 
-{% for task in tasks %}
-    <p>{{ task.title }}</p>
-    <p>Відсоток виконання: {{ task.completion_percentage }}%</p>
-{% endfor %}
+<p>Відсоток виконання: {{ overall_completion_percentage|floatformat:1 }}%</p>
