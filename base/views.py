@@ -115,7 +115,7 @@ class ExportPDFView(LoginRequiredMixin, ListView):
         return response
 class TaskCreate(LoginRequiredMixin, CreateView):
     model = Task
-    fields = ['title', 'description', 'priority', 'complete']
+    fields = ['title', 'description', 'priority', 'task_category', 'complete']
     success_url = reverse_lazy('tasks')
 
     def form_valid(self, form):
@@ -124,7 +124,7 @@ class TaskCreate(LoginRequiredMixin, CreateView):
 
 class TaskUpdate(LoginRequiredMixin, UpdateView):
     model = Task
-    fields = ['title', 'description', 'priority', 'complete']
+    fields = ['title', 'description', 'priority', 'task_category', 'complete']
     success_url = reverse_lazy('tasks')
 
 class TaskDelete(LoginRequiredMixin, DeleteView):
