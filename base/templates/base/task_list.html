@@ -44,6 +44,10 @@
         <th>Item</th>
         <th></th>
         <th></th>
+        <th></th>
+        <th>Priority</th>
+        <th>Category</th>
+        <th>Complete</th>
     </tr>
     {% for task in tasks %}
     <tr>
@@ -51,6 +55,9 @@
         <td><a href="{% url 'task' task.id %}">View</a></td>
         <td><a href="{% url 'task-update' task.id %}">Edit</a></td>
         <td><a href="{% url 'task-delete' task.id %}">Delete</a></td>
+        <td>{{ task.get_priority_display }}</td>
+        <td>{{ task.task_category.name}}</td>
+        <td>{{ task.complete|yesno:"Complete,Not complete" }}</td>
     </tr>
     {% empty %}
         <h3>No items in list</h3>
@@ -61,6 +68,7 @@
 <table>
     <tr>
         <th>Categories</th>
+        <th></th>
         <th></th>
         <th></th>
     </tr>
@@ -74,7 +82,6 @@
     {% empty %}
     <h3>No categories</h3>
     {% endfor %}
-
 </table>
 
 <p>Відсоток виконання: {{ overall_completion_percentage|floatformat:1 }}%</p>
