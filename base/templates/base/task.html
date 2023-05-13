@@ -1,1 +1,4 @@
-<h1>Task:{{ task }}</h1>
+<h1>{{ task.title }}</h1>
+<p>Decription: {{ task.description }}</p>
+<p>Priority: {{ task.get_priority_display }}</p>
+<p>Category: {{ task.task_category }}</p>
