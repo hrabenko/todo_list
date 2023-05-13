@@ -37,8 +37,6 @@ class RegisterPage(FormView):
             return redirect('tasks')
         return super(RegisterPage, self).get(*args, **kwargs)
 
-
-
 class TaskList(LoginRequiredMixin,ListView):
     model = Task
     context_object_name = 'tasks'
@@ -58,6 +56,10 @@ class TaskList(LoginRequiredMixin,ListView):
         priority_id = self.request.GET.get('priority')
         if priority_id:
             context['tasks'] = user_tasks.filter(priority=priority_id)
+
+        category_id = self.request.GET.get('task_category')
+        if category_id:
+            context['tasks'] = user_tasks.filter(task_category=category_id)
 
         complete_id = self.request.GET.get('complete')
         if complete_id:
@@ -113,6 +115,7 @@ class ExportPDFView(LoginRequiredMixin, ListView):
         p.save()
 
         return response
+    
 class TaskCreate(LoginRequiredMixin, CreateView):
     model = Task
     fields = ['title', 'description', 'priority', 'task_category', 'complete']
