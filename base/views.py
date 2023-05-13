@@ -135,6 +135,11 @@ class TaskDelete(LoginRequiredMixin, DeleteView):
     context_object_name = 'task'
     success_url = reverse_lazy('tasks')
 
+class CategoryDetail(LoginRequiredMixin, DetailView):
+    model = Category
+    context_object_name = 'category'
+    template_name = 'base/category.html'
+
 class CategoryCreate(LoginRequiredMixin, CreateView):
     model = Category
     fields = ['name', 'description']

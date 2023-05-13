@@ -67,6 +67,7 @@
     {% for category in categories %}
     <tr>
         <td>{{ category.name }}</td>
+        <td><a href="{% url 'category' category.id %}">View</a></td>
         <td><a href="{% url 'category-update' category.id %}">Edit</a></td>
         <td><a href="{% url 'category-delete' category.id %}">Delete</a></td>
     </tr>
