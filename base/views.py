@@ -1,4 +1,5 @@
 from .models import Task, Category
+from .forms import TaskForm
 from django.shortcuts import redirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
@@ -118,17 +119,31 @@ class ExportPDFView(LoginRequiredMixin, ListView):
     
 class TaskCreate(LoginRequiredMixin, CreateView):
     model = Task
-    fields = ['title', 'description', 'priority', 'task_category', 'complete']
+    form_class = TaskForm
     success_url = reverse_lazy('tasks')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super(TaskCreate, self).form_valid(form)
+        return super().form_valid(form)
 
 class TaskUpdate(LoginRequiredMixin, UpdateView):
     model = Task
-    fields = ['title', 'description', 'priority', 'task_category', 'complete']
+    form_class = TaskForm
     success_url = reverse_lazy('tasks')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 class TaskDelete(LoginRequiredMixin, DeleteView):
     model = Task
