@@ -1,4 +1,4 @@
-       <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -14,8 +14,17 @@
         }
 
         ul {
-            list-style-type: disc;
-            padding-left: 20px;
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .category {
+            font-weight: bold;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -23,8 +32,17 @@
     <h1>ToDo List - PDF Export</h1>
 
     <ul>
-        {% for task in object_list %}
-            <li>{{ task.title }}</li>
+        {% for category, tasks in task_dict.items %}
+            <li class="category">{{ category.name }}</li>
+            <ul>
+                {% for task in tasks %}
+                    <li>
+                        <strong>Task: </strong>{{ task.title }}
+                        <br>
+                        <strong>Status: </strong>{% if task.complete %}Done{% else %}Not Done{% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
         {% endfor %}
     </ul>
 </body>

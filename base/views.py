@@ -1,3 +1,4 @@
+from collections import defaultdict
 from .models import Task, Category
 from .forms import TaskForm
 from django.shortcuts import redirect
@@ -86,12 +87,27 @@ class TaskDetail(LoginRequiredMixin, DetailView):
     context_object_name = 'task'
     template_name = 'base/task.html'
 
+
 class ExportPDFView(LoginRequiredMixin, ListView):
     model = Task
     template_name = 'base/pdf_template.html'
 
     def render_to_response(self, context, **response_kwargs):
-        tasks = context['object_list']
+        user = self.request.user
+        tasks = context['object_list'].filter(user=user)
+
+        # Filter out tasks without a category
+        tasks_with_category = tasks.exclude(task_category__isnull=True)
+
+        # Group tasks by category
+        task_dict = defaultdict(list)
+        task_dict['Without Category'] = []  # Placeholder for tasks without category
+        for task in tasks_with_category:
+            task_dict[task.task_category.name].append(task)
+
+        # Add tasks without category
+        tasks_without_category = tasks.filter(task_category__isnull=True)
+        task_dict['Without Category'].extend(tasks_without_category)
 
         # Create PDF
         response = HttpResponse(content_type='application/pdf')
@@ -99,24 +115,26 @@ class ExportPDFView(LoginRequiredMixin, ListView):
         p = canvas.Canvas(response)
 
         # Generate PDF content
-        p.setFont('Helvetica-Bold', 16)  # Задаємо шрифт та розмір для заголовку
-        p.drawString(100, 800, 'Tasks:')  # Виводимо заголовок
+        p.setFont('Helvetica-Bold', 16)
+        p.drawString(100, 800, 'Tasks:')
 
-        p.setFont('Helvetica', 12)  # Повертаємо шрифт та розмір для завдань
-        y = 770  # Задаємо початкову позицію для завдань
-        task_number = 1  # Лічильник завдань
-        for task in tasks:
-            status = "Done" if task.complete else "Not Done"
-            task_line = f"{task_number}. {task.title} - {status}"
-            p.drawString(100, y, task_line)
+        p.setFont('Helvetica', 12)
+        y = 770
+        for category, tasks in task_dict.items():
+            p.drawString(100, y, category)
             y -= 20
-            task_number += 1
+            for task in tasks:
+                status = "Done" if task.complete else "Not Done"
+                task_line = f"{task.title} - {status}"
+                p.drawString(120, y, task_line)
+                y -= 20
+            y -= 10  # Additional spacing between categories
 
         p.showPage()
         p.save()
 
         return response
-    
+
 class TaskCreate(LoginRequiredMixin, CreateView):
     model = Task
     form_class = TaskForm
