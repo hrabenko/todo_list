@@ -18,6 +18,7 @@ class Task(models.Model):
     create = models.DateTimeField(auto_now_add=True)
     priority = models.CharField(max_length=1, choices=PRIORITY_LIST, default='H')
     task_category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
+    deadline = models.DateTimeField(null=True, blank=True)
     def __str__(self):
         return self.title
 
