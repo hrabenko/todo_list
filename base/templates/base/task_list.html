@@ -19,9 +19,9 @@
     <label for="priority">Priority:</label>
     <select name="priority" id="priority">
         <option value="">Усі</option>
-        <option value="H">High</option>
-        <option value="M">Medium</option>
-        <option value="L">Low</option>
+        <option value="1">High</option>
+        <option value="2">Medium</option>
+        <option value="3">Low</option>
     </select>
     <label for="complete">Complete:</label>
     <select name="complete" id="complete">
@@ -37,6 +37,16 @@
         {% endfor %}
     </select>
     <button type="submit">Filter</button>
+</form>
+<form method = "GET">
+    <select name="sorting" id = "sorting">
+        <option value="">-----</option>
+        <option value="1">Priority</option>
+        <option value="2">Date</option>
+        <option value="3">Reverse priority</option>
+        <option value="4">Reverse date</option>
+    </select>
+    <button type="submit">Sort</button>
 </form>
 
 <table>

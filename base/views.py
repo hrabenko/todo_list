@@ -66,6 +66,15 @@ class TaskList(LoginRequiredMixin,ListView):
         complete_id = self.request.GET.get('complete')
         if complete_id:
             context['tasks'] = user_tasks.filter(complete=complete_id)
+        sorting_id =self.request.GET.get('sorting')
+        if sorting_id == "1":
+            context['tasks'] = user_tasks.order_by('priority')
+        if sorting_id == "2":
+            context['tasks'] = user_tasks.order_by('deadline')
+        if sorting_id == "3":
+            context['tasks'] = user_tasks.order_by('-priority')
+        if sorting_id == "4":
+            context['tasks'] = user_tasks.order_by('-deadline')
 
         categories = Category.objects.filter(user=user)
         context['categories'] = categories

@@ -10,7 +10,7 @@ class Category(models.Model):
         return self.name
 
 class Task(models.Model):
-    PRIORITY_LIST = [("H", "High"), ("M", "Medium"), ("L", "Low")]
+    PRIORITY_LIST = [("1", "High"), ("2", "Medium"), ("3", "Low")]
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
@@ -21,7 +21,6 @@ class Task(models.Model):
     deadline = models.DateTimeField(null=True, blank=True)
     def __str__(self):
         return self.title
-
 
     class Meta:
         ordering = ['complete']
